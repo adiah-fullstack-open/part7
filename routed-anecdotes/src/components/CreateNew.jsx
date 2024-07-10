@@ -2,28 +2,26 @@ import { useNavigate } from "react-router-dom";
 import { useField } from "../hooks";
 
 const CreateNew = (props) => {
-  // const [content, setContent] = useState("");
-  // const [author, setAuthor] = useState("");
-  // const [info, setInfo] = useState("");
-  const content = useField("text");
-  const author = useField("text");
-  const info = useField("url");
+  const { reset: contentReset, ...contentProps } = useField("text");
+  const { reset: authorReset, ...authorProps } = useField("text");
+  const { reset: infoReset, ...infoProps } = useField("url");
 
   const navigate = useNavigate();
 
   const resetForm = (event) => {
     event.preventDefault();
-    content.reset();
-    author.reset();
-    info.reset();
+    // content.reset();
+    contentReset();
+    authorReset();
+    infoReset();
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     props.addNew({
-      content: content.value,
-      author: author.value,
-      info: info.value,
+      content: contentProps.value,
+      author: authorProps.value,
+      info: infoProps.value,
       votes: 0,
     });
 
@@ -40,15 +38,15 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input {...content} />
+          <input {...contentProps} />
         </div>
         <div>
           author
-          <input {...author} />
+          <input {...authorProps} />
         </div>
         <div>
           url for more info
-          <input {...info} />
+          <input {...infoProps} />
         </div>
 
         <button type="submit">create</button>
