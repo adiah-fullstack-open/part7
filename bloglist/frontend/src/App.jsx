@@ -13,16 +13,13 @@ import loginService from "./services/login";
 import storage from "./services/storage";
 
 const App = () => {
-  // const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
-  // const [notification, setNotification] = useState(null);
 
   const notification = useSelector((state) => state.notification);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // blogService.getAll().then((blogs) => setBlogs(blogs));
     dispatch(initializeBlogs());
   }, []);
 
@@ -39,9 +36,6 @@ const App = () => {
 
   const notify = (message, type = "success") => {
     dispatch(setNotification({ message, type }, 5));
-    // setTimeout(() => {
-    //   setNotification(null);
-    // }, 5000);
   };
 
   const handleLogin = async (credentials) => {
@@ -101,8 +95,7 @@ const App = () => {
         <button onClick={handleLogout}>logout</button>
       </div>
       <Togglable buttonLabel="create new blog" ref={blogFormRef}>
-        {/* <NewBlog doCreate={handleCreate} /> */}
-        <NewBlog />
+        <NewBlog blogFormRef={blogFormRef} />
       </Togglable>
       {[...blogs].sort(byLikes).map((blog) => (
         <Blog

@@ -1,36 +1,44 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { createBlog } from "../reducers/blogReducer";
+import { setNotification } from "../reducers/notificationReducer";
 
-const NewBlog = () => {
-  const [title, setTitle] = useState("");
-  const [url, setUrl] = useState("");
-  const [author, setAuthor] = useState("");
+const NewBlog = ({ blogFormRef }) => {
+  const [formData, setFormData] = useState({
+    title: "",
+    url: "",
+    author: "",
+  });
 
-  const handleTitleChange = (event) => {
-    setTitle(event.target.value);
+  const { title, url, author } = formData;
+
+  const handleChange = (event) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [event.target.name]: event.target.value,
+    }));
   };
 
-  const handleUrlChange = (event) => {
-    setUrl(event.target.value);
+  const dispatch = useDispatch();
+
+  const notify = (message, type = "success") => {
+    dispatch(setNotification({ message, type }, 5));
   };
 
-  const handleAuthorChange = (event) => {
-    setAuthor(event.target.value);
-  };
-
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    doCreate({ title, url, author });
-    setAuthor("");
-    setTitle("");
-    setUrl("");
-  };
 
-  // const handleCreate = async (blog) => {
-  //   const newBlog = await blogService.create(blog);
-  //   setBlogs(blogs.concat(newBlog));
-  //   notify(`Blog created: ${newBlog.title}, ${newBlog.author}`);
-  //   blogFormRef.current.toggleVisibility();
-  // };
+    dispatch(createBlog(formData));
+    notify(`Blog created: ${title}, ${author}`);
+
+    blogFormRef.current.toggleVisibility();
+
+    setFormData({
+      title: "",
+      url: "",
+      author: "",
+    });
+  };
 
   return (
     <div>
@@ -42,7 +50,8 @@ const NewBlog = () => {
             type="text"
             data-testid="title"
             value={title}
-            onChange={handleTitleChange}
+            name="title"
+            onChange={handleChange}
           />
         </div>
         <div>
@@ -51,7 +60,8 @@ const NewBlog = () => {
             type="text"
             data-testid="url"
             value={url}
-            onChange={handleUrlChange}
+            name="url"
+            onChange={handleChange}
           />
         </div>
         <div>
@@ -60,7 +70,8 @@ const NewBlog = () => {
             type="text"
             data-testid="author"
             value={author}
-            onChange={handleAuthorChange}
+            name="author"
+            onChange={handleChange}
           />
         </div>
         <button type="submit">Create</button>
