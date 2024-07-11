@@ -46,4 +46,12 @@ export const addLike = (id) => {
   };
 };
 
+export const deleteBlog = (id) => {
+  return async (dispatch) => {
+    const blogs = await blogService.getAll();
+    await blogService.remove(id);
+    dispatch(setBlogs(blogs.filter((b) => b.id !== id)));
+  };
+};
+
 export default blogSlice.reducer;

@@ -6,9 +6,8 @@ import Login from "./components/Login";
 import NewBlog from "./components/NewBlog";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
-import { addLike, initializeBlogs } from "./reducers/blogReducer";
+import { addLike, deleteBlog, initializeBlogs } from "./reducers/blogReducer";
 import { setNotification } from "./reducers/notificationReducer";
-import blogService from "./services/blogs";
 import loginService from "./services/login";
 import storage from "./services/storage";
 
@@ -63,8 +62,7 @@ const App = () => {
 
   const handleDelete = async (blog) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      await blogService.remove(blog.id);
-      // setBlogs(blogs.filter((b) => b.id !== blog.id));
+      dispatch(deleteBlog(blog.id));
       notify(`Blog ${blog.title}, by ${blog.author} removed`);
     }
   };
