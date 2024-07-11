@@ -1,21 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch } from "react-redux";
+import useField from "../hooks/useField";
 import { createBlog } from "../reducers/blogReducer";
 
 const NewBlog = ({ blogFormRef }) => {
-  const [formData, setFormData] = useState({
-    title: "",
-    url: "",
-    author: "",
-  });
+  const { reset: titleReset, ...titleProps } = useField("text", "title");
+  const { reset: urlReset, ...urlProps } = useField("url", "url");
+  const { reset: authorReset, ...authorProps } = useField("text", "author");
 
-  const { title, url, author } = formData;
-
-  const handleChange = (event) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [event.target.name]: event.target.value,
-    }));
+  const formData = {
+    title: titleProps.value,
+    url: urlProps.value,
+    author: urlProps.value,
   };
 
   const dispatch = useDispatch();
@@ -26,11 +22,9 @@ const NewBlog = ({ blogFormRef }) => {
 
     blogFormRef.current.toggleVisibility();
 
-    setFormData({
-      title: "",
-      url: "",
-      author: "",
-    });
+    titleReset();
+    urlReset();
+    authorReset();
   };
 
   return (
@@ -39,33 +33,15 @@ const NewBlog = ({ blogFormRef }) => {
       <form onSubmit={handleSubmit}>
         <div>
           <label>Title:</label>
-          <input
-            type="text"
-            data-testid="title"
-            value={title}
-            name="title"
-            onChange={handleChange}
-          />
+          <input {...titleProps} />
         </div>
         <div>
           <label>URL:</label>
-          <input
-            type="text"
-            data-testid="url"
-            value={url}
-            name="url"
-            onChange={handleChange}
-          />
+          <input {...urlProps} />
         </div>
         <div>
           <label>Author:</label>
-          <input
-            type="text"
-            data-testid="author"
-            value={author}
-            name="author"
-            onChange={handleChange}
-          />
+          <input {...authorProps} />
         </div>
         <button type="submit">Create</button>
       </form>
