@@ -1,12 +1,12 @@
 import { createRef, useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
-import Blog from "./components/Blog";
+import BlogList from "./components/BlogList";
 import Login from "./components/Login";
 import NewBlog from "./components/NewBlog";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
-import { addLike, deleteBlog, initializeBlogs } from "./reducers/blogReducer";
+import { initializeBlogs } from "./reducers/blogReducer";
 import { setNotification } from "./reducers/notificationReducer";
 import loginService from "./services/login";
 import storage from "./services/storage";
@@ -21,8 +21,6 @@ const App = () => {
   useEffect(() => {
     dispatch(initializeBlogs());
   }, []);
-
-  const blogs = useSelector((state) => state.blogs);
 
   useEffect(() => {
     const user = storage.loadUser();
@@ -48,23 +46,10 @@ const App = () => {
     }
   };
 
-  const handleVote = async (blog) => {
-    dispatch(addLike(blog.id));
-
-    notify(`You liked ${blog.title} by ${blog.author}`);
-  };
-
   const handleLogout = () => {
     setUser(null);
     storage.removeUser();
     notify(`Bye, ${user.name}!`);
-  };
-
-  const handleDelete = async (blog) => {
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      dispatch(deleteBlog(blog.id));
-      notify(`Blog ${blog.title}, by ${blog.author} removed`);
-    }
   };
 
   if (!user) {
@@ -77,8 +62,6 @@ const App = () => {
     );
   }
 
-  const byLikes = (a, b) => b.likes - a.likes;
-
   return (
     <div>
       <h2>blogs</h2>
@@ -90,14 +73,7 @@ const App = () => {
       <Togglable buttonLabel="create new blog" ref={blogFormRef}>
         <NewBlog blogFormRef={blogFormRef} />
       </Togglable>
-      {[...blogs].sort(byLikes).map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          handleVote={handleVote}
-          handleDelete={handleDelete}
-        />
-      ))}
+      <BlogList />
     </div>
   );
 };
