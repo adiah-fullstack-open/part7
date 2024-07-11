@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import loginService from "../services/login";
 import storage from "../services/storage";
-import { setNotification } from "./notificationReducer";
+import { notify } from "./notificationReducer";
 
 const userSlice = createSlice({
   name: "users",
@@ -28,17 +28,10 @@ export const login = (credentials) => {
       const user = await loginService.login(credentials);
 
       dispatch(setUser(user));
-      dispatch(
-        setNotification(
-          { message: `Welcome back, ${user.name}`, type: "success" },
-          5
-        )
-      );
+      dispatch(notify(`Welcome back, ${user.name}`));
       storage.saveUser(user);
     } catch (error) {
-      dispatch(
-        setNotification({ message: "Wrong credentials", type: "error" }, 5)
-      );
+      dispatch(notify("Wrong credentials", "error"));
     }
   };
 };

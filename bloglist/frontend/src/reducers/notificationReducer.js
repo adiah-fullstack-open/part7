@@ -26,4 +26,10 @@ export const setNotification = (content, time) => {
   };
 };
 
+export const notify = (message, type = "success") => {
+  return async (dispatch) => {
+    dispatch(setNotification({ message, type }, 5));
+  };
+};
+
 export default notificationSlice.reducer;

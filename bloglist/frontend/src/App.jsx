@@ -7,7 +7,7 @@ import NewBlog from "./components/NewBlog";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
 import { initializeBlogs } from "./reducers/blogReducer";
-import { setNotification } from "./reducers/notificationReducer";
+import { notify } from "./reducers/notificationReducer";
 import { initializeUser, logout } from "./reducers/userReducer";
 
 const App = () => {
@@ -23,13 +23,9 @@ const App = () => {
 
   const blogFormRef = createRef();
 
-  const notify = (message, type = "success") => {
-    dispatch(setNotification({ message, type }, 5));
-  };
-
   const handleLogout = () => {
     dispatch(logout());
-    notify(`Bye, ${user.name}!`);
+    dispatch(notify(`Bye, ${user.name}!`));
   };
 
   if (!user) {

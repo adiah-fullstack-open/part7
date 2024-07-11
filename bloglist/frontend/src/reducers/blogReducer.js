@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import blogService from "../services/blogs";
+import { notify } from "./notificationReducer";
 
 const blogSlice = createSlice({
   name: "blogs",
@@ -27,6 +28,7 @@ export const createBlog = (content) => {
   return async (dispatch) => {
     const newBlog = await blogService.create(content);
     dispatch(appendBlogs(newBlog));
+    dispatch(notify(`Blog created: ${newBlog.title}, ${newBlog.author}`));
   };
 };
 
@@ -43,6 +45,7 @@ export const addLike = (id) => {
     dispatch(
       setBlogs(blogs.map((blog) => (blog.id !== id ? blog : updatedBlog)))
     );
+    dispatch(notify(`You liked ${updatedBlog.title} by ${updatedBlog.author}`));
   };
 };
 

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { createBlog } from "../reducers/blogReducer";
-import { setNotification } from "../reducers/notificationReducer";
 
 const NewBlog = ({ blogFormRef }) => {
   const [formData, setFormData] = useState({
@@ -21,15 +20,9 @@ const NewBlog = ({ blogFormRef }) => {
 
   const dispatch = useDispatch();
 
-  const notify = (message, type = "success") => {
-    dispatch(setNotification({ message, type }, 5));
-  };
-
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     dispatch(createBlog(formData));
-    notify(`Blog created: ${title}, ${author}`);
 
     blogFormRef.current.toggleVisibility();
 
