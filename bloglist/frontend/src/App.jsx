@@ -6,7 +6,7 @@ import Login from "./components/Login";
 import NewBlog from "./components/NewBlog";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
-import { initializeBlogs } from "./reducers/blogReducer";
+import { addLike, initializeBlogs } from "./reducers/blogReducer";
 import { setNotification } from "./reducers/notificationReducer";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
@@ -50,14 +50,9 @@ const App = () => {
   };
 
   const handleVote = async (blog) => {
-    // console.log("updating", blog);
-    const updatedBlog = await blogService.update(blog.id, {
-      ...blog,
-      likes: blog.likes + 1,
-    });
+    dispatch(addLike(blog.id));
 
-    notify(`You liked ${updatedBlog.title} by ${updatedBlog.author}`);
-    // setBlogs(blogs.map((b) => (b.id === blog.id ? updatedBlog : b)));
+    notify(`You liked ${blog.title} by ${blog.author}`);
   };
 
   const handleLogout = () => {

@@ -30,4 +30,20 @@ export const createBlog = (content) => {
   };
 };
 
+export const addLike = (id) => {
+  return async (dispatch) => {
+    const blogs = await blogService.getAll();
+    const blogToChange = blogs.find((blog) => blog.id === id);
+
+    const updatedBlog = await blogService.update(id, {
+      ...blogToChange,
+      likes: blogToChange.likes + 1,
+    });
+
+    dispatch(
+      setBlogs(blogs.map((blog) => (blog.id !== id ? blog : updatedBlog)))
+    );
+  };
+};
+
 export default blogSlice.reducer;
