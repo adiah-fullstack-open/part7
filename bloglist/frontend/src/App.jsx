@@ -1,10 +1,12 @@
 import { createRef, useEffect, useState } from "react";
 
+import { useDispatch, useSelector } from "react-redux";
 import Blog from "./components/Blog";
 import Login from "./components/Login";
 import NewBlog from "./components/NewBlog";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
+import { setNotification } from "./reducers/notificationReducer";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import storage from "./services/storage";
@@ -12,7 +14,10 @@ import storage from "./services/storage";
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
-  const [notification, setNotification] = useState(null);
+  // const [notification, setNotification] = useState(null);
+
+  const notification = useSelector((state) => state.notification);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -28,10 +33,10 @@ const App = () => {
   const blogFormRef = createRef();
 
   const notify = (message, type = "success") => {
-    setNotification({ message, type });
-    setTimeout(() => {
-      setNotification(null);
-    }, 5000);
+    dispatch(setNotification({ message, type }, 5));
+    // setTimeout(() => {
+    //   setNotification(null);
+    // }, 5000);
   };
 
   const handleLogin = async (credentials) => {
@@ -53,7 +58,7 @@ const App = () => {
   };
 
   const handleVote = async (blog) => {
-    console.log("updating", blog);
+    // console.log("updating", blog);
     const updatedBlog = await blogService.update(blog.id, {
       ...blog,
       likes: blog.likes + 1,
@@ -92,7 +97,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification notification={notification} />
+      <Notification />
       <div>
         {user.name} logged in
         <button onClick={handleLogout}>logout</button>
