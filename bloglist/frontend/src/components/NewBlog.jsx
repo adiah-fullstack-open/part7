@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const NewBlog = ({ doCreate }) => {
+const NewBlog = () => {
   const [title, setTitle] = useState("");
   const [url, setUrl] = useState("");
   const [author, setAuthor] = useState("");
@@ -24,6 +24,13 @@ const NewBlog = ({ doCreate }) => {
     setTitle("");
     setUrl("");
   };
+
+  // const handleCreate = async (blog) => {
+  //   const newBlog = await blogService.create(blog);
+  //   setBlogs(blogs.concat(newBlog));
+  //   notify(`Blog created: ${newBlog.title}, ${newBlog.author}`);
+  //   blogFormRef.current.toggleVisibility();
+  // };
 
   return (
     <div>
