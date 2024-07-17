@@ -1,24 +1,23 @@
 import { createRef, useEffect, useState } from "react";
 
+import blogService from "./services/blogs";
+
+import { useQuery } from "@tanstack/react-query";
 import Blog from "./components/Blog";
 import Login from "./components/Login";
 import NewBlog from "./components/NewBlog";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
 import { useNotificationDispatch } from "./context/NotificationContext";
-import blogService from "./services/blogs";
 import loginService from "./services/login";
 import storage from "./services/storage";
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
-  const [user, setUser] = useState(null);
-
+  // const queryClient = useQueryClient();
   const dispatch = useNotificationDispatch();
 
-  useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, []);
+  // const [blogs, setBlogs] = useState([]);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const user = storage.loadUser();
@@ -26,6 +25,26 @@ const App = () => {
       setUser(user);
     }
   }, []);
+
+  const result = useQuery({
+    queryKey: ["blogs"],
+    queryFn: blogService.getAll,
+    retry: 1,
+  });
+
+  if (result.isLoading) {
+    return <div>loading data...</div>;
+  }
+
+  if (result.isError) {
+    return <span>blog service not available due to problems in server</span>;
+  }
+
+  const blogs = result.data;
+
+  // useEffect(() => {
+  //   blogService.getAll().then((blogs) => setBlogs(blogs));
+  // }, []);
 
   const blogFormRef = createRef();
 
@@ -48,9 +67,10 @@ const App = () => {
   };
 
   const handleCreate = async (blog) => {
-    const newBlog = await blogService.create(blog);
-    setBlogs(blogs.concat(newBlog));
-    notify(`Blog created: ${newBlog.title}, ${newBlog.author}`);
+    // const newBlog = await blogService.create(blog);
+    // setBlogs(blogs.concat(newBlog));
+    console.log("Create new blog");
+    // notify(`Blog created: ${newBlog.title}, ${newBlog.author}`);
     blogFormRef.current.toggleVisibility();
   };
 
@@ -62,7 +82,7 @@ const App = () => {
     });
 
     notify(`You liked ${updatedBlog.title} by ${updatedBlog.author}`);
-    setBlogs(blogs.map((b) => (b.id === blog.id ? updatedBlog : b)));
+    // setBlogs(blogs.map((b) => (b.id === blog.id ? updatedBlog : b)));
   };
 
   const handleLogout = () => {
@@ -74,7 +94,7 @@ const App = () => {
   const handleDelete = async (blog) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
       await blogService.remove(blog.id);
-      setBlogs(blogs.filter((b) => b.id !== blog.id));
+      // setBlogs(blogs.filter((b) => b.id !== blog.id));
       notify(`Blog ${blog.title}, by ${blog.author} removed`);
     }
   };
